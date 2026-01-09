@@ -1,0 +1,81 @@
+appId: com.stocksync.app
+productName: StockSync
+copyright: Copyright © 2024 StockSync
+
+directories:
+  output: dist
+  buildResources: build
+
+files:
+  - "package.json"
+  - "next.config.js"
+  - "public/**/*"
+  - ".next/standalone/**/*"
+  - ".next/static/**/*"
+  - "node_modules/**/*"
+  - "!node_modules/.cache/**/*"
+  - "!node_modules/electron/**/*"
+  - "!node_modules/electron-builder/**/*"
+  - "electron/**/*"
+  - "lib/**/*"
+  - "components/**/*"
+  - "hooks/**/*"
+  - "app/**/*"
+
+extraFiles:
+  - from: ".env.local"
+    to: ".env.local"
+    filter:
+      - "**/*"
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: build/icon.ico
+  artifactName: ${productName}-${version}-Setup.${ext}
+  publisherName: StockSync
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  icon: build/icon.icns
+  category: public.app-category.finance
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+  icon: build/icon.png
+  category: Finance
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: StockSync
+
+dmg:
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+
+publish:
+  provider: github
+  owner: your-username
+  repo: stocksync
+

@@ -26,9 +26,15 @@ next-env.d.ts
 *.tsbuildinfo
 
 # Production builds
-/build
 dist/
 dist
+
+# Build resources (keep build/ directory for icons, but ignore generated files)
+build/*.ico
+build/*.icns
+build/*.png
+!build/README.md
+!build/entitlements.mac.plist
 
 # Environment files (comprehensive coverage)
 *token.json*

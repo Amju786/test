@@ -1,16 +1,25 @@
 {
-    "name": "nextjs-mongo-template",
-    "version": "0.1.0",
+    "name": "stocksync",
+    "productName": "StockSync",
+    "version": "1.0.0",
+    "description": "Multi-user stock trading platform with broker integration",
+    "author": "StockSync Team",
     "private": true,
     "main": "electron/main.js",
+    "homepage": "./",
     "scripts": {
       "dev": "cross-env NODE_OPTIONS=--max-old-space-size=512 next dev --hostname 0.0.0.0 --port 3000",
-      "dev:no-reload": "next dev --hostname 0.0.0.0 --port 3000",
-      "dev:webpack": "next dev --hostname 0.0.0.0 --port 3000",
+      "dev:no-reload": "cross-env NODE_ENV=development next dev --hostname 0.0.0.0 --port 3000",
       "build": "next build",
       "start": "next start",
-      "electron-dev": "concurrently -k \"cross-env BROWSER=none yarn dev:no-reload\" \"wait-on tcp:3000 && electron .\"",
-      "electron-pack": "electron-builder"
+      "electron": "electron .",
+      "electron:dev": "cross-env NODE_ENV=development concurrently -k \"cross-env BROWSER=none yarn dev:no-reload\" \"wait-on tcp:3000 && electron .\"",
+      "electron:build": "yarn build && electron-builder",
+      "electron:build:win": "yarn build && electron-builder --win",
+      "electron:build:mac": "yarn build && electron-builder --mac",
+      "electron:build:linux": "yarn build && electron-builder --linux",
+      "electron:dist": "yarn electron:build",
+      "postinstall": "electron-builder install-app-deps"
     },
     "dependencies": {
       "@hookform/resolvers": "^5.1.1",
@@ -77,6 +86,99 @@
       "tailwindcss": "^3.4.1",
       "wait-on": "^7.2.0"
     },
-    "packageManager": "yarn@1.22.22"
+    "packageManager": "yarn@1.22.22",
+    "build": {
+      "appId": "com.stocksync.app",
+      "productName": "StockSync",
+      "directories": {
+        "output": "dist",
+        "buildResources": "build"
+      },
+      "files": [
+        "package.json",
+        "next.config.js",
+        "public/**/*",
+        ".next/standalone/**/*",
+        ".next/static/**/*",
+        ".next/server.js",
+        "node_modules/**/*",
+        "!node_modules/.cache/**/*",
+        "!node_modules/electron/**/*",
+        "!node_modules/electron-builder/**/*",
+        "electron/**/*",
+        "electron/loading.html",
+        "lib/**/*",
+        "components/**/*",
+        "hooks/**/*",
+        "app/**/*"
+      ],
+      "extraResources": [
+        {
+          "from": ".next/standalone",
+          "to": ".next/standalone",
+          "filter": ["**/*"]
+        },
+        {
+          "from": ".next/static",
+          "to": ".next/static",
+          "filter": ["**/*"]
+        }
+      ],
+      "win": {
+        "target": [
+          {
+            "target": "nsis",
+            "arch": ["x64"]
+          }
+        ],
+        "icon": "build/icon.ico",
+        "artifactName": "${productName}-${version}-Setup.${ext}"
+      },
+      "mac": {
+        "target": [
+          {
+            "target": "dmg",
+            "arch": ["x64", "arm64"]
+          }
+        ],
+        "icon": "build/icon.icns",
+        "category": "public.app-category.finance",
+        "hardenedRuntime": true,
+        "gatekeeperAssess": false,
+        "entitlements": "build/entitlements.mac.plist",
+        "entitlementsInherit": "build/entitlements.mac.plist"
+      },
+      "linux": {
+        "target": [
+          {
+            "target": "AppImage",
+            "arch": ["x64"]
+          }
+        ],
+        "icon": "build/icon.png",
+        "category": "Finance"
+      },
+      "nsis": {
+        "oneClick": false,
+        "allowToChangeInstallationDirectory": true,
+        "createDesktopShortcut": true,
+        "createStartMenuShortcut": true,
+        "shortcutName": "StockSync"
+      },
+      "dmg": {
+        "contents": [
+          {
+            "x": 130,
+            "y": 220
+          },
+          {
+            "x": 410,
+            "y": 220,
+            "type": "link",
+            "path": "/Applications"
+          }
+        ]
+      }
+    }
   }
   
